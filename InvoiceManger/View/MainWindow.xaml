@@ -1,0 +1,185 @@
+﻿<Window x:Class="InvoiceManger.View.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:InvoiceManger.View"
+        xmlns:app="clr-namespace:InvoiceManger.Common"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        mc:Ignorable="d"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        Background="{DynamicResource MaterialDesignPaper}"
+        TextElement.FontWeight="Medium"
+        TextElement.FontSize="14"
+        DataContext="{Binding Source={StaticResource Locator},Path=Main}"
+        Title="发票查询" Height="450" Width="1980" WindowStartupLocation="CenterScreen">
+    <Window.Resources>
+        <ResourceDictionary Source="/InvoiceManger;component/Assets/Style.xaml" />
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="36"/>
+            <RowDefinition Height="180"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="24"/>
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Horizontal" Grid.Row="0">
+            <Button x:Name="InputInvoice" Content="扫描发票"   Height="30"  Width="100" Click="InputInvoice_Click" IsEnabled="{Binding ButtonEna}"/>
+            <Button x:Name="SysConfig" Content="系统设置"  Margin="5 0 0 0" Height="30"  Width="100" Click="SysConfig_Click" IsEnabled="{Binding ButtonEna}"/>
+            <Button  Content="手动添加" Margin="50 0 0 0" Height="30"  Width="100"  Command="{Binding AppendCommand}" IsEnabled="{Binding ButtonEna}"/>
+            <Button  Content="修改发票"  Margin="5 0 0 0"  Height="30"  Width="100" Command="{Binding ModifyCommand}" IsEnabled="{Binding ButtonMDEna}"/>
+            <Button  Content="删除发票"  Margin="5 0 0 0"  Height="30"  Width="100" Command="{Binding DeleteCommand}" IsEnabled="{Binding ButtonMDEna}"/>
+            <Button  Content="确 定"  Margin="5 0 0 0"  Height="30"  Width="100" Command="{Binding AcceptCommand}" IsEnabled="{Binding ButtonEnaN}"/>
+            <Button  Content="取 消"  Margin="5 0 0 0"  Height="30"  Width="100" Command="{Binding CancleCommand}" IsEnabled="{Binding ButtonEnaN}"/>
+            <Button  Content="查询发票" Margin="160 0 0 0" Height="30"  Width="100" Command="{Binding QueryCommand}" IsEnabled="{Binding ButtonEna}"/>
+            <Button  Content="在线验证发票" Margin="160 0 0 0" Height="30"  Width="120" Command="{Binding VerifyCommand}" IsEnabled="{Binding ButtonMDEna}"/>
+        </StackPanel>
+        <Grid  Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="920"/>
+                <!--<ColumnDefinition Width="207*"/>-->
+                <ColumnDefinition Width="560"/>
+                <ColumnDefinition Width="160"/>
+                <ColumnDefinition Width="160"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.Column="0" Orientation="Vertical">
+                <StackPanel Orientation="Horizontal" Height="80">
+                    <Label Content="发票号码" Margin="10,0,0,0" Width="80" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                    <TextBox HorizontalAlignment="Left"  VerticalAlignment="Center" Width="120" IsEnabled="{Binding ButtonEnaN}" >
+                        <TextBox.Text>
+                            <Binding Path="TempViewInvoice.InvoiceNumber" UpdateSourceTrigger="PropertyChanged">
+                                <Binding.ValidationRules>
+                                    <app:InvoiceSnRule />
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox>
+                    <Label Content="发票编码" Margin="10,0,0,0" Width="80" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                    <TextBox HorizontalAlignment="Left"  VerticalAlignment="Center" Width="120"  IsEnabled="{Binding ButtonEnaN}">
+                        <TextBox.Text>
+                            <Binding Path="TempViewInvoice.InvoiceCode" UpdateSourceTrigger="PropertyChanged">
+                                <Binding.ValidationRules>
+                                    <app:InvoiceCodeRule />
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox>
+                    <Label Content="发票金额" Margin="10,0,0,0"  Width="80" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                    <TextBox HorizontalAlignment="Left"  VerticalAlignment="Center" Width="120"  IsEnabled="{Binding ButtonEnaN}" >
+                        <TextBox.Text>
+                            <Binding Path="TempViewInvoice.Amount" UpdateSourceTrigger="PropertyChanged">
+                                <Binding.ValidationRules>
+                                    <app:AmountRule />
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox>
+                    <Label Content="校验码" Margin="10,0,0,0"  Width="60" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                    <TextBox HorizontalAlignment="Left"  VerticalAlignment="Center" Width="180" Text="{Binding TempViewInvoice.Verification}"  IsEnabled="{Binding ButtonEnaN}"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Height="80">
+                    <Label Content="开票日期"  Margin="10,0,0,0" Width="80" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                    <DatePicker  Width="120" Text="{Binding TempViewInvoice.Date, Mode=TwoWay}" HorizontalAlignment="Center" IsEnabled="{Binding ButtonEnaN}"/>
+                    <Label Content="录入日期" Margin="10,0,0,0" Width="80" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                    <DatePicker HorizontalAlignment="Center" Width="120" Text="{Binding TempViewInvoice.RecDate,Mode=TwoWay}" IsEnabled="{Binding ButtonEnaN}"/>
+                    <Label Content="报销部门" Margin="10,0,0,0" Width="80" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                    <ComboBox HorizontalAlignment="Center" Width="80" ItemsSource="{Binding Departments }" SelectedItem="{Binding Department, Mode=TwoWay}"  
+                              DisplayMemberPath="DepartmentName"  IsEnabled="{Binding ButtonEnaN}" >
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="SelectionChanged">
+                                <i:InvokeCommandAction Command="{Binding CbChangeCommand}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </ComboBox>
+                    <Label Content="报销人员" Margin="10,0,0,0" Width="80" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                    <ComboBox Width="80" ItemsSource="{Binding Persons}" DisplayMemberPath="PersonName" SelectedItem="{Binding Person}"  IsEnabled="{Binding ButtonEnaN}" HorizontalAlignment="Center"/>
+                    <Label Content="财务" Margin="10,0,0,0" Width="40" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                    <ComboBox Width="80" ItemsSource="{Binding Accountants}" DisplayMemberPath="Person.PersonName" SelectedItem="{Binding Accountant}" HorizontalAlignment="Center"  IsEnabled="{Binding ButtonEnaN}"/>
+                </StackPanel>
+            </StackPanel>
+            <!--<ContentControl Grid.Column="1" Content="{Binding Page}"/>-->
+            <StackPanel Grid.Column="1" Orientation="Vertical" >
+                <StackPanel Orientation="Horizontal" Margin="0 10">
+                    <TextBlock HorizontalAlignment="Left" Margin="10,0,0,0" TextWrapping="Wrap" Text="查询日期：" FontSize="16"  Foreground="ForestGreen"/>
+                    <TextBlock HorizontalAlignment="Left" Margin="10,2,0,0" TextWrapping="Wrap" Text="从：" />
+                    <DatePicker HorizontalAlignment="Left" Margin="10,0,0,0" Width="150" SelectedDate="{Binding FromDate}" IsEnabled="{Binding QueryDateEna}"/>
+                    <TextBlock HorizontalAlignment="Left"  Margin="20,2,0,0" TextWrapping="Wrap" Text="到："/>
+                    <DatePicker HorizontalAlignment="Left" Margin="10,0,0,0"   Width="150" SelectedDate="{Binding ToDate}" IsEnabled="{Binding QueryDateEna}"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal"  Margin="0 10">
+                    <TextBlock Text="查询参数:" VerticalAlignment="Center" Margin="10 0 0 0" Foreground="ForestGreen" FontSize="16"/>
+                    <TextBlock VerticalAlignment="Center" Margin="20 0 0 0" TextWrapping="Wrap" Text="发票号码：" />
+                    <TextBox VerticalAlignment="Center" Margin="10" TextWrapping="Wrap"   Width="160" Text="{Binding InvoiceSN}" IsEnabled="{Binding QuerySnEna}" />
+                    <TextBlock Text="操作员：" VerticalAlignment="Center" Margin="20 0 0 0"/>
+                    <ComboBox  Margin="10,0,0,0" ItemsSource="{Binding Accountants}" SelectedItem="{Binding QueryAccountant}" Width="100"
+                       DisplayMemberPath="Person.PersonName"  SelectedIndex="0" IsEnabled="{Binding QueryOperatorEna}"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal"  Margin="0 10">
+                    <TextBlock HorizontalAlignment="Left" Margin="100,0,0,0" TextWrapping="Wrap"  Text="部门：" VerticalAlignment="Center"/>
+                    <ComboBox  HorizontalAlignment="Left" Margin="40,0,0,0" Width="120" ItemsSource="{Binding Departments}" IsEnabled="{Binding QueryDepartmentEna}"
+                   SelectedValuePath="DepartmentId" SelectedItem="{Binding QueryDepartment}" DisplayMemberPath="DepartmentName"  >
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="SelectionChanged">
+                                <i:InvokeCommandAction Command="{Binding QueryCbChangeCommand}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </ComboBox>
+                    <TextBlock HorizontalAlignment="Left" Margin="65,0,0,0"  VerticalAlignment="Center" TextWrapping="Wrap" Text="人员：" />
+                    <ComboBox  HorizontalAlignment="Left" Margin="25,0,0,0" Width="100" ItemsSource="{Binding QueryPersons}" 
+                        SelectedItem="{Binding QueryPerson}" DisplayMemberPath="PersonName" IsEnabled="{Binding QueryPersonEna}"/>
+                </StackPanel>
+            </StackPanel>
+            <GroupBox Grid.Column="2"  Header="查询时间:" Margin="10 5 0 5" >
+                <ItemsControl ItemsSource="{Binding RadioTimeButtons}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <RadioButton  Margin="5,5"  Height="18" Content="{Binding Content}" IsChecked="{Binding IsCheck}" GroupName="RadioTimeButtons" 
+                                Command="{Binding DataContext.RadioCheckCommand,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=ItemsControl}}">
+                            </RadioButton>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </GroupBox>
+            <GroupBox Grid.Column="3"  Header="查询方式:" Margin="10 5 0 5" >
+                <ItemsControl ItemsSource="{Binding RadioButtons}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <RadioButton  Margin="5,3"  Height="18" Content="{Binding Content}" IsChecked="{Binding IsCheck}" GroupName="RadioButtons" 
+                                Command="{Binding DataContext.RadioCheckCommand,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=ItemsControl}}">
+                            </RadioButton>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </GroupBox>
+        </Grid>
+        <DataGrid x:Name="ResultDataGrid" Margin="10,0,10,0"  AutoGenerateColumns="False" IsReadOnly="True" Grid.Row="2" IsEnabled="{Binding ButtonEna}"
+                  ItemsSource="{Binding ViewInvoices, Mode=OneWay}" SelectedItem="{Binding ViewInvoice, Mode=TwoWay}" 
+                  ScrollViewer.VerticalScrollBarVisibility="Visible" AlternationCount="2">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="SelectionChanged">
+                    <i:InvokeCommandAction Command="{Binding DbGridSelectChange}"/>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="发票号码" Binding="{Binding InvoiceNumber}" Width="120"/>
+                <DataGridTextColumn Header="发票编码" Binding="{Binding InvoiceCode}" Width="150"/>
+                <DataGridTextColumn Header="发票金额" Binding="{Binding Amount}" Width="150"/>
+                <DataGridTextColumn Header="开票日期" Binding="{Binding Date,StringFormat='{}{0:yyyy-MM-dd HH:mm:ss}'}"  Width="180"/>
+                <DataGridTextColumn Header="录入日期" Binding="{Binding RecDate,StringFormat='{}{0:yyyy-MM-dd HH:mm:ss}'}"  Width="180"/>
+                <DataGridTextColumn Header="校验码1" Binding="{Binding Verification}" Width="200"/>
+                <DataGridTextColumn Header="校验码2" Binding="{Binding VerificationCode}"  Width="80"/>
+                <DataGridTextColumn Header="在线校验" Binding="{Binding VerifyState}" Width="120"/>
+                <DataGridTextColumn Header="报销人" Binding="{Binding PersonName}" Width="100"/>
+                <DataGridTextColumn Header="财务人员" Binding="{Binding AcctName}" Width="100"/>
+            </DataGrid.Columns>
+        </DataGrid>
+        <StackPanel Grid.Row="3" Orientation="Horizontal">
+            <Label  Content="财务人员： " HorizontalAlignment="Left" Margin="10,0,0,0" Height="24" VerticalAlignment="Bottom" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" />
+            <Label x:Name="Oper"   HorizontalAlignment="Left" Margin="2,0,0,0" Height="24" VerticalAlignment="Bottom" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" />
+            <Label Content="当前查询记录数："  HorizontalAlignment="Left" Margin="10,0,0,0" Height="24" VerticalAlignment="Bottom" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" />
+            <Label Content="{Binding QueryCount}"  HorizontalAlignment="Left" Margin="2,0,0,0" Height="24" VerticalAlignment="Bottom" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" />
+            <Label Content="当前查询发票总金额："  HorizontalAlignment="Left" Margin="10,0,0,0" Height="24" VerticalAlignment="Bottom" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" />
+            <Label Content="{Binding Summary}"  HorizontalAlignment="Left" Margin="2,0,0,0" Height="24" VerticalAlignment="Bottom" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" />
+        </StackPanel>
+    </Grid>
+</Window>
