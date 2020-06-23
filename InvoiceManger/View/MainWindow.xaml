@@ -36,13 +36,14 @@
         </StackPanel>
         <Grid  Grid.Row="1">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="920"/>
+                <ColumnDefinition Width="155"/>
+                <ColumnDefinition Width="765.5"/>
                 <!--<ColumnDefinition Width="207*"/>-->
                 <ColumnDefinition Width="560"/>
                 <ColumnDefinition Width="160"/>
                 <ColumnDefinition Width="160"/>
             </Grid.ColumnDefinitions>
-            <StackPanel Grid.Column="0" Orientation="Vertical">
+            <StackPanel Grid.Column="0" Orientation="Vertical" Grid.ColumnSpan="2" Margin="0,0,0.5,0">
                 <StackPanel Orientation="Horizontal" Height="80">
                     <Label Content="发票号码" Margin="10,0,0,0" Width="80" HorizontalAlignment="Left" VerticalAlignment="Center"/>
                     <TextBox HorizontalAlignment="Left"  VerticalAlignment="Center" Width="120" IsEnabled="{Binding ButtonEnaN}" >
@@ -98,7 +99,7 @@
                 </StackPanel>
             </StackPanel>
             <!--<ContentControl Grid.Column="1" Content="{Binding Page}"/>-->
-            <StackPanel Grid.Column="1" Orientation="Vertical" >
+            <StackPanel Grid.Column="1" Orientation="Vertical" Grid.ColumnSpan="2" Margin="765,0,0,0" >
                 <StackPanel Orientation="Horizontal" Margin="0 10">
                     <TextBlock HorizontalAlignment="Left" Margin="10,0,0,0" TextWrapping="Wrap" Text="查询日期：" FontSize="16"  Foreground="ForestGreen"/>
                     <TextBlock HorizontalAlignment="Left" Margin="10,2,0,0" TextWrapping="Wrap" Text="从：" />
@@ -129,7 +130,7 @@
                         SelectedItem="{Binding QueryPerson}" DisplayMemberPath="PersonName" IsEnabled="{Binding QueryPersonEna}"/>
                 </StackPanel>
             </StackPanel>
-            <GroupBox Grid.Column="2"  Header="查询时间:" Margin="10 5 0 5" >
+            <GroupBox Grid.Column="3"  Header="查询时间:" Margin="10,5,160,5" Grid.ColumnSpan="2" >
                 <ItemsControl ItemsSource="{Binding RadioTimeButtons}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
@@ -140,7 +141,7 @@
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
             </GroupBox>
-            <GroupBox Grid.Column="3"  Header="查询方式:" Margin="10 5 0 5" >
+            <GroupBox Grid.Column="4"  Header="查询方式:" Margin="10.5,5,0,5" >
                 <ItemsControl ItemsSource="{Binding RadioButtons}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>

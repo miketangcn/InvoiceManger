@@ -540,6 +540,7 @@ namespace InvoiceManger.ViewModel
         #endregion
 
         #region √¸¡Ó
+
         private RelayCommand queryCommand;
 
         public RelayCommand QueryCommand

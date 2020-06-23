@@ -18,7 +18,7 @@ namespace InvoiceManger.View
     /// <summary>
     /// AccountMange.xaml 的交互逻辑
     /// </summary>
-    public partial class AccountMange : Page
+    public partial class AccountMange : UserControl
     {
         public AccountMange()
         {

@@ -18,7 +18,7 @@ namespace InvoiceManger.View
     /// <summary>
     /// StaffMange.xaml 的交互逻辑
     /// </summary>
-    public partial class StaffMange : Page
+    public partial class StaffMange : UserControl
     {
         public StaffMange()
         {

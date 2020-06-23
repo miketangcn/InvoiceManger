@@ -11,11 +11,24 @@ using InvoiceManger.Model;
 using System.Windows;
 using System.Collections.ObjectModel;
 using System.Data.Entity;
+using InvoiceManger.View;
 
 namespace InvoiceManger.ViewModel
 {
   public class ConfigViewModel:ViewModelBase
     {
+        private Object page;
+
+        public Object Page
+        {
+            get { return page; }
+            set { page = value; RaisePropertyChanged(() => Page); }
+        }
+
+        private Object PageDepartmentMange;
+        private Object PageAccountMange;
+        private Object PagePasswordMange;
+        private Object PageStaffMange;
 
         public ConfigViewModel()
         {
@@ -23,17 +36,27 @@ namespace InvoiceManger.ViewModel
             Departments = new ObservableCollection<Department>();
             Operators = new List<string>();
             AccountantsName = new List<string>();
+            PageDepartmentMange = new DepartmentMange();
+            PageAccountMange = new AccountMange();
+            PagePasswordMange = new PasswordMange();
+            PageStaffMange = new StaffMange();
+            Page = PagePasswordMange;
+            BtnPageAccountEna = BtnPageDepartmentEna = BtnPageStaffEna = true;
+            StaffOperateMode = "浏览模式";
             if (Information.AccountantName=="陆升")
             {
                 ListEna = true;
             }
+            CurrentOperator = Information.AccountantName;
             Inital();
         }
         public void Inital()
         {
+
             Departments.Clear();
             using (var db = new DataModel())
             {
+                
                 tempPersons = new List<Person>();
                 var tempdeps = db.Departments.ToList();
                 tempdeps.ForEach(d => Departments.Add(d));
@@ -46,8 +69,15 @@ namespace InvoiceManger.ViewModel
             }
             Department temp = new Department() { DepartmentId = 0, DepartmentName = "" };
             Departments.Insert(0, temp);
+            StaffOperateMode = "浏览模式";
+            BtnStaffAppendEna = true;
+            BtnStaffModifyEna = true;
+            BtnStaffCancelConfirmEna = false;
+            ComStaffDepartmentEna = false;
+            TextStaffEna = false;
         }
-
+        
+        #region 控件使能
         //两个listview的使能
         private bool listEna;
 
@@ -56,6 +86,71 @@ namespace InvoiceManger.ViewModel
             get { return listEna; }
             set { listEna = value;RaisePropertyChanged(() => ListEna); }
         }
+
+        //config画面切换按钮使能
+        private bool btnPagePasswordEna;
+
+        public bool BtnPagePasswordEna
+        {
+            get { return btnPagePasswordEna; }
+            set { btnPagePasswordEna = value; RaisePropertyChanged(() => BtnPagePasswordEna); }
+        }
+
+        private bool btnPageAccountEna;
+
+        public bool BtnPageAccountEna
+        {
+            get { return btnPageAccountEna; }
+            set { btnPageAccountEna = value; RaisePropertyChanged(() => BtnPageAccountEna); }
+        }
+
+        private bool btnPageDepartmentEna;
+
+        public bool BtnPageDepartmentEna
+        {
+            get { return btnPageDepartmentEna; }
+            set { btnPageDepartmentEna = value;RaisePropertyChanged(() => BtnPageDepartmentEna); }
+        }
+
+        private bool btnPageStaffEna;
+
+        public bool BtnPageStaffEna
+        {
+            get { return btnPageStaffEna; }
+            set { btnPageStaffEna = value; RaisePropertyChanged(() => BtnPageStaffEna); }
+        }
+
+        // 部门输入文本框获得焦点
+        private bool isTextDepartmentFocus;
+
+        public bool IsTextDepartmentFocus
+        {
+            get { return isTextDepartmentFocus; }
+            set { isTextDepartmentFocus = value; RaisePropertyChanged(() => IsTextDepartmentFocus); }
+        }
+
+        private bool btnDepartmentAppendEna;
+
+        public bool BtnDepartmentAppendEna
+        {
+            get { return btnDepartmentAppendEna; }
+            set { btnDepartmentAppendEna = value;RaisePropertyChanged(() => BtnDepartmentAppendEna); }
+        }
+        private bool btnDepartmentModifyEna;
+
+        public bool BtnDepartmentModifyEna
+        {
+            get { return btnDepartmentModifyEna; }
+            set { btnDepartmentModifyEna = value; RaisePropertyChanged(() => BtnDepartmentModifyEna); }
+        }
+        private bool btnDepartmentCancelConfirm;
+
+        public bool BtnDepartmentCancelConfirm
+        {
+            get { return btnDepartmentCancelConfirm; }
+            set { btnDepartmentCancelConfirm = value;RaisePropertyChanged(() => BtnDepartmentCancelConfirm); }
+        }
+
         //确认添加操作员的按钮使能
         private bool btnAddOperatorEna;
 
@@ -72,6 +167,89 @@ namespace InvoiceManger.ViewModel
         {
             get { return btnRemoveOpertorEna; }
             set { btnRemoveOpertorEna = value;RaisePropertyChanged(() => BtnRemoveOperatorEna); }
+        }
+
+
+        //员工增加查询按钮使能
+        private bool btnStaffAppendEna;
+
+        public bool BtnStaffAppendEna
+        {
+            get { return btnStaffAppendEna; }
+            set { btnStaffAppendEna = value;RaisePropertyChanged(() => BtnStaffAppendEna); }
+        }
+        //员工修改删除按钮使能
+        private bool btnStaffModifyEna;
+
+        public bool BtnStaffModifyEna
+        {
+            get { return btnStaffModifyEna; }
+            set { btnStaffModifyEna = value; RaisePropertyChanged(() => BtnStaffModifyEna); }
+        }
+        //员工操作确认取消按钮使能
+        private bool btnStaffCancelConfirmEna;
+
+        public bool BtnStaffCancelConfirmEna
+        {
+            get { return btnStaffCancelConfirmEna; }
+            set { btnStaffCancelConfirmEna = value; RaisePropertyChanged(() => BtnStaffCancelConfirmEna); }
+        }
+
+        //员工输入文本框获得焦点
+        private bool isTextStaffFocus;
+
+        public bool IsTextStaffFocus
+        {
+            get { return isTextStaffFocus; }
+            set { isTextStaffFocus = value; RaisePropertyChanged(() => IsTextStaffFocus); }
+        }
+
+        //输入文本框使能
+        private bool textStaffEna;
+
+        public bool TextStaffEna
+        {
+            get { return textStaffEna; }
+            set { textStaffEna = value; RaisePropertyChanged(() => TextStaffEna); }
+        }
+
+        //员工画面部门combox使能 ComStaffDepartmentEna 
+        private bool comStaffDepartmentEna;
+
+        public bool ComStaffDepartmentEna
+        {
+            get { return comStaffDepartmentEna; }
+            set { comStaffDepartmentEna = value; RaisePropertyChanged(() => ComStaffDepartmentEna); }
+        }
+        #endregion
+
+        #region 变量定义
+
+        //部门操作模式
+        private string departmentOperateMode;
+
+        public string DepartmentOperateMode
+        {
+            get { return departmentOperateMode; }
+            set { departmentOperateMode = value; RaisePropertyChanged(() => DepartmentOperateMode); }
+        }
+        //员工操作模式
+        private string staffOperateMode;
+
+        public string StaffOperateMode
+        {
+            get { return staffOperateMode; }
+            set { staffOperateMode = value;RaisePropertyChanged(() => StaffOperateMode); }
+        }
+
+        
+        //当前操作人员
+        private string currentOperator;
+
+        public string CurrentOperator
+        {
+            get { return currentOperator; }
+            set { currentOperator = value; RaisePropertyChanged(() => CurrentOperator); }
         }
 
         private List<string> accountantsName;
@@ -105,6 +283,7 @@ namespace InvoiceManger.ViewModel
 
 
         private List<Person> tempPersons;
+
         private string newPassword;
 
         public string NewPassword
@@ -182,6 +361,57 @@ namespace InvoiceManger.ViewModel
             get { return departmentName; }
             set { departmentName = value;RaisePropertyChanged(() => DepartmentName); }
         }
+        #endregion
+
+        #region 主画面控件操作
+        //画面切换按钮事件
+        private RelayCommand<string> cmdPage;
+
+        public RelayCommand<string> CmdPage
+        {
+            get
+            {
+                if (cmdPage == null)
+                {
+                    cmdPage = new RelayCommand<string>((p) => ExcuteCmdPage(p));
+                }
+                return cmdPage;
+            }
+            set { cmdPage = value; }
+        }
+
+        private void ExcuteCmdPage(string p)
+        {
+            switch (p)
+            {
+               case "密码管理":
+                Page = PagePasswordMange;
+                    BtnPagePasswordEna = false;
+                    BtnPageAccountEna = BtnPageDepartmentEna = BtnPageStaffEna = true;
+                    break;
+                case "员工管理":
+                    Page = PageStaffMange;
+                    BtnPageStaffEna = false;
+                    BtnPageAccountEna = BtnPageDepartmentEna = BtnPagePasswordEna = true;
+                    break;
+                case "操作员管理":
+                    Page = PageAccountMange;
+                    BtnPageAccountEna = false;
+                    BtnPagePasswordEna = BtnPageDepartmentEna = BtnPageStaffEna = true;
+                    break;
+                case "部门管理":
+                    Page = PageDepartmentMange;
+                    BtnPageDepartmentEna = false;
+                    BtnPageAccountEna = BtnPagePasswordEna = BtnPageStaffEna = true;
+                    break;
+                default:
+                    break;
+            }
+        }
+        #endregion
+
+        #region 操作员管理画面事件
+
         //添加财务操作员按钮事件
         private RelayCommand cmdAddOperator;
 
@@ -218,7 +448,6 @@ namespace InvoiceManger.ViewModel
                     }
                 }
             }
-
         }
         //移除财务操作员按钮事件
         private RelayCommand cmdRemoveOperator;
@@ -271,11 +500,12 @@ namespace InvoiceManger.ViewModel
         }
 
         private void ExcuteAcctListChange()
-        {          
-            if (AccountantName!=null)
+        {
+            if (AccountantName != null)
             {
-                BtnAddOperatorEna = Operators.Contains(AccountantName) ? false:true;
+                BtnAddOperatorEna = Operators.Contains(AccountantName) ? false : true;
             }
+            else BtnAddOperatorEna = false;
         }
 
         //操作人员listview变化事件
@@ -296,12 +526,15 @@ namespace InvoiceManger.ViewModel
 
         private void ExcuteOperatorListChange()
         {
-            if (OperatorName!=null)
+            if (OperatorName!=null && OperatorName!="陆升")
             {
                 BtnRemoveOperatorEna = true;
             }
+            else BtnRemoveOperatorEna = false;
         }
+        #endregion
 
+        #region 部门管理画面事件
         private RelayCommand departmentListChange;
 
         public RelayCommand DepartmentListChange
@@ -326,122 +559,55 @@ namespace InvoiceManger.ViewModel
 
         }
 
-        private RelayCommand cbChangeCommand;
+        private RelayCommand<string> cmdDepartment;
 
-        public RelayCommand CbChangeCommand
+        public RelayCommand<string> CmdDepartment
         {
             get
             {
-                if (cbChangeCommand == null)
+                if (cmdDepartment == null)
                 {
-                    cbChangeCommand = new RelayCommand(() => ExcuteCbChangeCommand());
+                    cmdDepartment = new RelayCommand<string>((p) => ExcuteCmdDepartment(p));
                 }
-                return cbChangeCommand;
+                return cmdDepartment;
             }
-            set { cbChangeCommand = value; }
+            set { cmdDepartment = value; }
         }
 
-        private void ExcuteCbChangeCommand()
+        private void ExcuteCmdDepartment(string p)
         {
-            
-            using (var db = new DataModel())
+            switch (p)
             {
-                if (QueryDepartment != null)
-                {
-                    Persons.Clear();
-                    if (QueryDepartment.DepartmentId==0)
-                    {
-                       tempPersons.ForEach(p => Persons.Add(p));
-                    }
-                    else
-                    { 
-                    var temp1persons = tempPersons.Where(p=>p.DepId==QueryDepartment.DepartmentId).ToList();
-                    temp1persons.ForEach(p => Persons.Add(p));
-                    }
-                }
+                //case "新增人员":
+                //    StaffOperateMode = "新增人员";
+                //    BtnStaffAppendEna = false;
+                //    BtnStaffCancelConfirmEna = true;
+                //    BtnStaffModifyEna = false;
+                //    ComStaffDepartmentEna = true;
+                //    TextStaffEna = true;
+                //    IsTextStaffFocus = true;
+                //    PersonName = "";
+                //    break;
+                //case "修改人员":
+                //    StaffOperateMode = "修改人员";
+                //    BtnStaffAppendEna = false;
+                //    BtnStaffCancelConfirmEna = true;
+                //    BtnStaffModifyEna = false;
+                //    ComStaffDepartmentEna = true;
+                //    TextStaffEna = true;
+                //    IsTextStaffFocus = true;
+                //    break;
+                //case "查询人员":
+                //    staffOperateMode = "查询人员";
+                //    BtnStaffAppendEna = false;
+                //    BtnStaffCancelConfirmEna = true;
+                //    BtnStaffModifyEna = false;
+                //    TextStaffEna = true;
+                //    IsTextStaffFocus = true;
+                //    break;
+                //default:
+                //    break;
             }
-
-        }
-        private RelayCommand  peopleGridSelectChange;
-
-        public RelayCommand  PeopleGridSelectChange
-        {
-            get
-            {
-                if (peopleGridSelectChange == null)
-                {
-                    peopleGridSelectChange = new RelayCommand(() =>ExcutePeopleGridSelectChange());
-                }
-                return peopleGridSelectChange;
-            }
-            set { peopleGridSelectChange = value; }
-        }
-
-        private void ExcutePeopleGridSelectChange()
-        {
-            // EnaButton = ViewInvoice != null ? true : false;
-            if (Person != null)
-            {
-                PersonName = Person.PersonName;
-                Department = Person.Department;
-            }
-            else PersonName = "";
-        }
-        private RelayCommand modifyPassword;
-
-        public RelayCommand ModifyPassword
-        {
-            get
-            {
-                if (modifyPassword == null)
-                {
-                    modifyPassword = new RelayCommand(() => ExcuteModifyPassword());
-                }
-                return modifyPassword;
-            }
-            set { modifyPassword = value; }
-        }
-
-        private void ExcuteModifyPassword()
-        {
-            if (NewPassword == SecondPassword && NewPassword.Length >= 6)
-            {
-                MessageBoxResult result = MessageBox.Show($"是否修改当前用户：{Information.AccountantName}的用户密码？", "提示信息",
-                     MessageBoxButton.YesNo, MessageBoxImage.Information);
-                if (result == MessageBoxResult.Yes)
-                {
-                    using (var db=new DataModel())
-                    {
-                        var op = db.Accountants.Where(o => o.AccountantId == Information.AccountantId).First();
-                        if (op!=null)
-                        {
-                            op.Password = NewPassword;
-                            db.SaveChanges();
-                            MessageBox.Show("密码修改完成，请退出软件后重新登陆！", "提示信息", MessageBoxButton.OK, MessageBoxImage.Information);
-                        }
-                    }
-                }
-            }
-            else MessageBox.Show("两次密码不同，请检查！", "提示信息", MessageBoxButton.OK, MessageBoxImage.Information);
-        }
-        private RelayCommand clear;
-
-        public RelayCommand Clear
-        {
-            get
-            {
-                if (clear == null)
-                {
-                    clear = new RelayCommand(() => ExcuteClear());
-                }
-                return clear;
-            }
-            set { clear = value; }
-        }
-
-        private void ExcuteClear()
-        {
-            NewPassword = SecondPassword = "";
         }
 
         private RelayCommand appendDepartment;
@@ -452,8 +618,8 @@ namespace InvoiceManger.ViewModel
             {
                 if (appendDepartment == null)
                 {
-                    appendDepartment =  new RelayCommand(() => ExcuteAppendDepartment());
-                                        }
+                    appendDepartment = new RelayCommand(() => ExcuteAppendDepartment());
+                }
                 return appendDepartment;
             }
             set { appendDepartment = value; }
@@ -461,7 +627,7 @@ namespace InvoiceManger.ViewModel
 
         private void ExcuteAppendDepartment()
         {
-            if (DepartmentName!= null && DepartmentName != "")
+            if (DepartmentName != null && DepartmentName != "")
             {
                 MessageBoxResult result = MessageBox.Show($"是否添加名称为{DepartmentName }的部门", "提示信息",
                      MessageBoxButton.YesNo, MessageBoxImage.Information);
@@ -479,7 +645,7 @@ namespace InvoiceManger.ViewModel
                             db.Departments.Add(department);
                             db.SaveChanges();
                             int tempid = 0;
-                            if (QueryDepartment!=null)
+                            if (QueryDepartment != null)
                             {
                                 tempid = QueryDepartment.DepartmentId;
                             };
@@ -489,8 +655,8 @@ namespace InvoiceManger.ViewModel
                             ViewDepartment = Departments.Where(d => d.DepartmentId == department.DepartmentId).FirstOrDefault();
                         }
                     }
-                }                    
-            } 
+                }
+            }
         }
         private RelayCommand modifyDepartment;
 
@@ -509,11 +675,11 @@ namespace InvoiceManger.ViewModel
 
         private void ExcuteModifyDepartment()
         {
-            if (DepartmentName != null && DepartmentName != "" && ViewDepartment!=null)
+            if (DepartmentName != null && DepartmentName != "" && ViewDepartment != null)
             {
                 MessageBoxResult result = MessageBox.Show($"是否将名称为{ViewDepartment.DepartmentName}的部门改为{DepartmentName }", "提示信息",
                     MessageBoxButton.YesNo, MessageBoxImage.Information);
-                if (result==MessageBoxResult.Yes)
+                if (result == MessageBoxResult.Yes)
                 {
                     using (var db = new DataModel())
                     {
@@ -553,9 +719,9 @@ namespace InvoiceManger.ViewModel
 
         private void ExcuteDeleteDepartment()
         {
-            if ( ViewDepartment != null)
+            if (ViewDepartment != null)
             {
-                if (ViewDepartment.DepartmentName==DepartmentName)
+                if (ViewDepartment.DepartmentName == DepartmentName)
                 {
                     MessageBoxResult result = MessageBox.Show($"是否将名称为{ViewDepartment.DepartmentName}的部门删除", "提示信息",
                                        MessageBoxButton.YesNo, MessageBoxImage.Information);
@@ -584,23 +750,89 @@ namespace InvoiceManger.ViewModel
                 else MessageBox.Show("部门名称已经修改", "提示信息", MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
+        #endregion
 
-        private RelayCommand inputPersons;
+        #region 员工管理画面事件
+        private RelayCommand cbChangeCommand;
 
-        public RelayCommand InputPersons
+        public RelayCommand CbChangeCommand
+        {
+            get
+            {
+                if (cbChangeCommand == null)
+                {
+                    cbChangeCommand = new RelayCommand(() => ExcuteCbChangeCommand());
+                }
+                return cbChangeCommand;
+            }
+            set { cbChangeCommand = value; }
+        }
+
+        private void ExcuteCbChangeCommand()
+        {
+            
+            using (var db = new DataModel())
+            {
+                if (QueryDepartment != null)
+                {
+                    Persons.Clear();
+                    if (QueryDepartment.DepartmentId==0)
+                    {
+                       tempPersons.ForEach(p => Persons.Add(p));
+                    }
+                    else
+                    { 
+                       var temp1persons = tempPersons.Where(p=>p.DepId==QueryDepartment.DepartmentId).ToList();
+                       temp1persons.ForEach(p => Persons.Add(p));
+                    }
+                }
+            }
+
+        }
+
+        private RelayCommand  peopleGridSelectChange;
+
+        public RelayCommand  PeopleGridSelectChange
+        {
+            get
+            {
+                if (peopleGridSelectChange == null)
+                {
+                    peopleGridSelectChange = new RelayCommand(() =>ExcutePeopleGridSelectChange());
+                }
+                return peopleGridSelectChange;
+            }
+            set { peopleGridSelectChange = value; }
+        }
+
+        private void ExcutePeopleGridSelectChange()
+        {
+            // EnaButton = ViewInvoice != null ? true : false;
+            if (Person != null)
+            {
+                PersonName = Person.PersonName;
+                Department = Person.Department;
+            }
+            else PersonName = "";
+        }
+
+    
+        private RelayCommand cmdInputPersons;
+
+        public RelayCommand CmdInputPersons
         {
             get 
             {
-                if (inputPersons==null)
+                if (cmdInputPersons == null)
                 {
-                    inputPersons = new RelayCommand(() => ExcuteInputPersons());
+                    cmdInputPersons = new RelayCommand(() => ExcuteCmdInputPersons());
                 }
-                return inputPersons; 
+                return cmdInputPersons; 
             }
-            set { inputPersons = value; }
+            set { cmdInputPersons = value; }
         }
         //从excel中导入人员
-        private void ExcuteInputPersons()
+        private void ExcuteCmdInputPersons()
         {
             string xpath;
             List<viewPerson> viewPeople = new List<viewPerson>();
@@ -629,28 +861,147 @@ namespace InvoiceManger.ViewModel
                     }
                     db.SaveChanges();
                 }
+                int tempid = 0;
+                if (QueryDepartment != null)
+                {
+                    tempid = QueryDepartment.DepartmentId;
+                }
+                Inital();
+                QueryDepartment = Departments.Where(d => d.DepartmentId == tempid).FirstOrDefault();
+                ExcuteCbChangeCommand();
             }
            
         }
+        //员工操作
+        private RelayCommand<string> cmdPerson;
 
-        private RelayCommand deletePerson;
-
-        public RelayCommand DeletePerson
+        public RelayCommand<string> CmdPerson
         {
             get
             {
-                if (deletePerson==null)
+                if (cmdPerson == null)
                 {
-                    deletePerson = new RelayCommand(() => ExcuteDeletePerson());
+                    cmdPerson = new RelayCommand<string>((p) => ExcuteCmdPerson(p));
                 }
-                return deletePerson;
+                return cmdPerson;
             }
-            set { deletePerson = value; }
+            set { cmdPerson = value; }
         }
 
-        private void ExcuteDeletePerson()
+        private void ExcuteCmdPerson(string p)
+        {
+            switch (p)
+            {
+                case "新增人员":
+                    StaffOperateMode = "新增人员";
+                    BtnStaffAppendEna = false;            
+                    BtnStaffCancelConfirmEna = true;
+                    BtnStaffModifyEna = false;
+                    ComStaffDepartmentEna = true;
+                    TextStaffEna = true;
+                    IsTextStaffFocus = true;
+                    PersonName = "";
+                    break;
+                case "修改人员":
+                    StaffOperateMode = "修改人员";
+                    BtnStaffAppendEna = false;
+                    BtnStaffCancelConfirmEna = true;
+                    BtnStaffModifyEna = false;
+                    ComStaffDepartmentEna = true;
+                    TextStaffEna = true;
+                    IsTextStaffFocus = true;
+                    break;
+                case "查询人员":
+                    staffOperateMode = "查询人员";
+                    BtnStaffAppendEna = false;
+                    BtnStaffCancelConfirmEna = true;
+                    BtnStaffModifyEna = false;
+                    TextStaffEna = true;
+                    IsTextStaffFocus = true;
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private RelayCommand cmdStaffMangeConfirm;
+        public RelayCommand CmdStaffMangeConfirm
+        {
+            get
+            {
+                if (cmdStaffMangeConfirm == null)
+                {
+                    cmdStaffMangeConfirm = new RelayCommand(() => ExcuteCmdStaffMangeConfirm());
+                }
+                return cmdStaffMangeConfirm;
+            }
+            set { cmdStaffMangeConfirm = value; }
+        }
+
+        private void ExcuteCmdStaffMangeConfirm()
+        {
+            switch (StaffOperateMode)
+            {
+                case "新增人员":
+                    ExcuteAppendPerson();
+                    break;
+                case "修改人员":
+                    ExcuteModfiyPerson();
+                    break;
+                case "查询人员":
+                    ExcuteQueryPerson();
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private RelayCommand cmdStaffMangeCancle;
+        public RelayCommand CmdStaffMangeCancle
+        {
+            get
+            {
+                if (cmdStaffMangeCancle == null)
+                {
+                    cmdStaffMangeCancle = new RelayCommand(() => ExcuteCmdStaffMangeCancle());
+                }
+                return cmdStaffMangeCancle;
+            }
+            set { cmdStaffMangeCancle = value; }
+        }
+
+        private void ExcuteCmdStaffMangeCancle()
+        {
+            StaffOperateMode = "浏览模式";
+            BtnStaffAppendEna = true;
+            BtnStaffModifyEna = true;
+            ComStaffDepartmentEna = false;
+            TextStaffEna = false;
+        }
+
+        private RelayCommand cmddeletePerson;
+
+        public RelayCommand CmdDeletePerson
+        {
+            get
+            {
+                if (cmddeletePerson==null)
+                {
+                    cmddeletePerson = new RelayCommand(() => ExcuteCmdDeletePerson());
+                }
+                return cmddeletePerson;
+            }
+            set { cmddeletePerson = value; }
+        }
+
+        private void ExcuteCmdDeletePerson()
         {
             bool flag = false;
+            StaffOperateMode = "删除人员";
+            BtnStaffAppendEna = false;
+            BtnStaffModifyEna = false;
+            ComStaffDepartmentEna = true;
+            TextStaffEna = true;
             try
             {
                 using (var db = new DataModel())
@@ -679,31 +1030,22 @@ namespace InvoiceManger.ViewModel
             catch (Exception)
             {
             }
+            StaffOperateMode = "浏览模式";
+            BtnStaffAppendEna = true;
+            BtnStaffModifyEna = true;
+            ComStaffDepartmentEna = false;
+            TextStaffEna = false;            
         }
 
-        private RelayCommand modifyPerson;
-
-        public RelayCommand ModifyPerson
-        {
-            get
-            {
-                if (modifyPerson==null)
-                {
-                    modifyPerson = new RelayCommand(() => ExcuteModfiyPerson());
-                }
-                return modifyPerson;
-            }
-            set { modifyPerson = value; }
-        }
 
         private void ExcuteModfiyPerson()
         {
-            if (Person == null)
-            {
-                MessageBox.Show("你没有选择任何人员信息，不能执行修改命令", "信息提示", MessageBoxButton.OK, MessageBoxImage.Information);
-            }
-            else
-            {
+            //if (Person == null)
+            //{
+            //    MessageBox.Show("你没有选择任何人员信息，不能执行修改命令", "信息提示", MessageBoxButton.OK, MessageBoxImage.Information);
+            //}
+            //else
+            //{
                 bool flag = false;
                 try
                 {
@@ -739,26 +1081,16 @@ namespace InvoiceManger.ViewModel
                 {
                     MessageBox.Show(e.Message);
                 }
-            }
-           
-        }
-    
+            StaffOperateMode = "浏览模式";
+            BtnStaffAppendEna = true;
+            BtnStaffModifyEna = true;
+            BtnStaffCancelConfirmEna = false;
+            ComStaffDepartmentEna = false;
+            TextStaffEna = false;
+            //}
 
-        private RelayCommand appendPerson;
-
-        public RelayCommand AppendPerson
-        {
-            get
-            {   
-                if (appendPerson == null)
-                {
-                    appendPerson = new RelayCommand(() => ExcuteAppendPerson());
-                }
-                return appendPerson;
-            }
-            set { appendPerson = value; }
         }
-            
+              
         private void ExcuteAppendPerson()
         {
             bool flag =false;
@@ -814,9 +1146,87 @@ namespace InvoiceManger.ViewModel
             else MessageBox.Show($"请检查待添加人员信息是否正确"
                                   , "信息提示", MessageBoxButton.OK, MessageBoxImage.Information);
         }
-            
+
+        private void ExcuteQueryPerson()
+        {
+            if (PersonName!=null && PersonName!="")
+            {
+                using (var db = new DataModel())
+                {
+                    var temp1persons = tempPersons.Where(p => p.PersonName.Contains(PersonName)).ToList();
+                    Persons.Clear();
+                    temp1persons.ForEach(p => Persons.Add(p));                  
+                }
+            }
+            StaffOperateMode = "浏览模式";
+            BtnStaffAppendEna = true;
+            BtnStaffModifyEna = true;
+            BtnStaffCancelConfirmEna = false;
+            ComStaffDepartmentEna = false;
+            TextStaffEna = false;
+        }
+
+        #endregion
+
+        #region 密码管理画面事件
+        private RelayCommand modifyPassword;
+        public RelayCommand ModifyPassword
+        {
+            get
+            {
+                if (modifyPassword == null)
+                {
+                    modifyPassword = new RelayCommand(() => ExcuteModifyPassword());
+                }
+                return modifyPassword;
+            }
+            set { modifyPassword = value; }
+        }
+
+        private void ExcuteModifyPassword()
+        {
+            if (NewPassword == SecondPassword && NewPassword.Length >= 6)
+            {
+                MessageBoxResult result = MessageBox.Show($"是否修改当前用户：{Information.AccountantName}的用户密码？", "提示信息",
+                     MessageBoxButton.YesNo, MessageBoxImage.Information);
+                if (result == MessageBoxResult.Yes)
+                {
+                    using (var db = new DataModel())
+                    {
+                        var op = db.Accountants.Where(o => o.AccountantId == Information.AccountantId).First();
+                        if (op != null)
+                        {
+                            op.Password = NewPassword;
+                            db.SaveChanges();
+                            MessageBox.Show("密码修改完成，请退出软件后重新登陆！", "提示信息", MessageBoxButton.OK, MessageBoxImage.Information);
+                        }
+                    }
+                }
+            }
+            else MessageBox.Show("两次密码不同，请检查！", "提示信息", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+        private RelayCommand clear;
+
+        public RelayCommand Clear
+        {
+            get
+            {
+                if (clear == null)
+                {
+                    clear = new RelayCommand(() => ExcuteClear());
+                }
+                return clear;
+            }
+            set { clear = value; }
+        }
+
+        private void ExcuteClear()
+        {
+            NewPassword = SecondPassword = "";
+        }
+        #endregion
     }
-public class viewPerson:ObservableObject
+    public class viewPerson:ObservableObject
     {
         private string department;
 
@@ -832,7 +1242,6 @@ public class viewPerson:ObservableObject
             get { return name; }
             set { name = value; RaisePropertyChanged(() => Name); }
         }
-
 
     }
 }

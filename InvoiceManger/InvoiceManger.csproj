@@ -112,6 +112,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Common\FocusBehavior.cs" />
     <Compile Include="Common\Information.cs" />
     <Compile Include="Common\NpoiHelper.cs" />
     <Compile Include="Common\ScanerHook.cs" />

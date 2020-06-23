@@ -1,26 +1,32 @@
-﻿<Page x:Class="InvoiceManger.View.DepartmentMange"
+﻿<UserControl x:Class="InvoiceManger.View.DepartmentMange"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-      xmlns:local="clr-namespace:InvoiceManger.View" xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+      xmlns:local="clr-namespace:InvoiceManger.View" 
+      xmlns:lib="clr-namespace:InvoiceManger.Common"  
+      xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
       mc:Ignorable="d" 
-      d:DesignHeight="450" d:DesignWidth="800"
-      Title="DepartmentMange">
+      d:DesignHeight="450" d:DesignWidth="800">
 
     <Grid>
         <StackPanel Orientation="Vertical" Background="LightCyan" Grid.Column="0" >
             <StackPanel  Height="36"  VerticalAlignment="Center">
                 <TextBlock Text="部门管理" FontSize="24" FontWeight="Light" Margin="10 0 0 0" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                <TextBlock Text="{Binding  DepartmentOperateMode}" FontSize="20" Foreground="Red"  FontWeight="Bold" Margin="500 0 0 0" 
+                           HorizontalAlignment="Left" VerticalAlignment="Center"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal">
-                <Button Width="90" Margin="5" Content="新建部门" Command="{Binding AppendDepartment}"/>
-                <Button Width="90" Margin="5" Content="修改部门" Command="{Binding ModifyDepartment}"/>
-                <Button Width="90" Margin="5" Content="删除部门" Command="{Binding DeleteDepartment}"/>
+                <Button Width="90" Margin="5" Content="新建部门" Command="{Binding CmdDepartment}" IsEnabled="{Binding BtnDepartmentAppendEna}"/>
+                <Button Width="90" Margin="5" Content="修改部门" Command="{Binding  CmdDepartment}" IsEnabled="{Binding BtnDepartmentModifyEna}"/>
+                <Button Width="90" Margin="5" Content="删除部门" Command="{Binding  CmdDepartment}" IsEnabled="{Binding BtnDepartmentModifyEna}"/>
+                <Button Width="90" Margin="250 5 5 5" Content="确  定" Command="{Binding CmdDepartmentMangeConfirm}" IsEnabled="{Binding BtnDepartmentCancelConfirmEna}"/>
+                <Button Width="90" Margin="5" Content="取 消" Command="{Binding CmdDepartmentMangeCancel}" IsEnabled="{Binding BtnDepartmentCancelConfirmEna}"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal" Height="48">
                 <TextBlock Text="部门名称："   Margin="10,0,0,0 " VerticalAlignment="Center"/>
-                <TextBox Margin="10,0,0,0 " VerticalAlignment="Center" TextAlignment="Center" Width="100" Text="{Binding DepartmentName}"/>
+                <TextBox Margin="10,0,0,0 " lib:FocusBehavior.IsFocused="{ Binding Path=IsTextDepartmentFocus,Mode=TwoWay}" VerticalAlignment="Center" 
+                         TextAlignment="Center" Width="100" Text="{Binding DepartmentName}"/>
             </StackPanel>
         </StackPanel>
         <ListBox ItemsSource="{Binding Departments}" SelectedItem="{Binding ViewDepartment}" DisplayMemberPath="DepartmentName" 
@@ -32,4 +38,4 @@
             </i:Interaction.Triggers>
         </ListBox>
     </Grid>
-</Page>
+</UserControl>

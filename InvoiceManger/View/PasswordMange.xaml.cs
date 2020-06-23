@@ -18,7 +18,7 @@ namespace InvoiceManger.View
     /// <summary>
     /// PasswordMange.xaml 的交互逻辑
     /// </summary>
-    public partial class PasswordMange : Page
+    public partial class PasswordMange : UserControl
     {
         public PasswordMange()
         {

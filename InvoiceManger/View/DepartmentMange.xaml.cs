@@ -18,7 +18,7 @@ namespace InvoiceManger.View
     /// <summary>
     /// DepartmentMange.xaml 的交互逻辑
     /// </summary>
-    public partial class DepartmentMange : Page
+    public partial class DepartmentMange : UserControl
     {
         public DepartmentMange()
         {

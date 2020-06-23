@@ -8,16 +8,22 @@
         xmlns:local="clr-namespace:InvoiceManger.View"
         mc:Ignorable="d"
         DataContext="{Binding Source={StaticResource Locator},Path=ConfigViewModel}"
-        Title="系统配置" Height="800" Width="1100" WindowStyle="ToolWindow">
+        Title="系统配置" Height="800" Width="760" WindowStyle="ToolWindow">
+    <!--<Window.Resources>
+        <ResourceDictionary Source="/InvoiceManger;component/Assets/Style.xaml" />
+    </Window.Resources>-->
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="48"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0" Orientation="Horizontal" >
-            <Button Width="90" Margin="5" Content="新建部门" Command="{Binding AppendDepartment}"/>
-            <Button Width="90" Margin="5" Content="新建部门" Command="{Binding AppendDepartment}"/>
-
+            <Button Width="90" Margin="5" Content="密码管理" Command="{Binding CmdPage}" CommandParameter="密码管理" IsEnabled="{Binding BtnPagePasswordEna}"/>
+            <Button Width="90" Margin="5" Content="员工管理" Command="{Binding CmdPage}" CommandParameter="员工管理" IsEnabled="{Binding BtnPageStaffEna}"/>
+            <Button Width="90" Margin="5" Content="部门管理" Command="{Binding CmdPage}" CommandParameter="部门管理" IsEnabled="{Binding BtnPageDepartmentEna}"/>
+            <Button Width="100" Margin="5" Content="操作员管理" Command="{Binding CmdPage}" CommandParameter="操作员管理" 
+                    IsEnabled="{Binding BtnPageAccountEna}" FontSize="12"/>
         </StackPanel>
+        <ContentControl Grid.Row="1" Content="{Binding Page}" Background="AliceBlue"/>
     </Grid>
 </Window>
